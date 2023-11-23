@@ -3,9 +3,10 @@ Tamagocha tamagocha = new Tamagocha { Name = "Бебрик" };
 tamagocha.HungryChanged += Tamagocha_HungryChanged;
 tamagocha.DirtyChanged += Tamagocha_DirtyChanged;
 tamagocha.ThirstyChanged += Tamagocha_ThirstyChanged;
+tamagocha.GoForWalk += Tamagocha_GoForWalk;
 
-Console.SetCursorPosition(0, 0);
-Console.Write("F-кормить  C-мыть  D-поить  P-подарок  I-информация  Escape-выход ");
+Console.SetCursorPosition(0, 1);
+Console.Write("F-кормить  C-мыть  D-поить  P-подарок  I-информация  Escape-выход W-выгуливать ");
 Console.SetCursorPosition(0, 0);
 
 
@@ -21,8 +22,10 @@ do
         tamagocha.Clean();
     else if (command.Key == ConsoleKey.D)
         tamagocha.Drink();
-    else if(command.Key == ConsoleKey.P)
+    else if (command.Key == ConsoleKey.P)
         tamagocha.GivePresent();
+    else if (command.Key == ConsoleKey.W)
+        tamagocha.Walking();
     tamagocha.ChangeHappy();
     tamagocha.ChangeHealth();
     tamagocha.Die();
@@ -48,12 +51,19 @@ void Tamagocha_ThirstyChanged(object? sender, EventArgs e)
     Console.Write($"{tamagocha.Name} засох! Показатель жажды растет: {tamagocha.Dirty}");
     Console.SetCursorPosition(0, 0);
 }
+void Tamagocha_GoForWalk(object? sender, EventArgs e)
+{
+    Console.SetCursorPosition(0, 15);
+    Console.Write($"{tamagocha.Name} хочет гулять! Показатель скуки растет: {tamagocha.Boredom}");
+    Console.SetCursorPosition(0, 0);
+}
 
 class Tamagocha
 {
     public string Name { get; set; }
     public int Health { get; set; } = 100;
     public int Happyness { get; set; } = 100;
+    private int hungry = 0;
     public int Hungry
     {
         get => hungry;
@@ -82,11 +92,22 @@ class Tamagocha
             ThirstyChanged?.Invoke(this, EventArgs.Empty);
         }
     }
+    private int boredom = 0;
+    public int Boredom
+    {
+        get => boredom;
+        set
+        {
+            boredom = value;
+            GoForWalk?.Invoke(this, EventArgs.Empty);
+        }
+    }
     public bool IsDead { get; set; } = false;
 
     public event EventHandler HungryChanged;
     public event EventHandler DirtyChanged;
     public event EventHandler ThirstyChanged;
+    public event EventHandler GoForWalk;
 
     public Tamagocha()
     {
@@ -94,8 +115,6 @@ class Tamagocha
         thread.Start();
     }
     Random random = new Random();
-
-    private int hungry = 0;
 
     private void LifeCircle(object? obj)
     {
@@ -119,7 +138,7 @@ class Tamagocha
 
     private void FallSleep()
     {
-        WriteMessageToConsole($"{Name} внезапно начинает спать как угорелый. Это продолжается целую минуту. Показатели голода, жажды и чистоты повышены!  ",15);
+        WriteMessageToConsole($"{Name} внезапно начинает спать как угорелый. Это продолжается целую минуту. Показатели голода, жажды и чистоты повышены!  ",18);
         Thirsty += random.Next(5, 10);
         Hungry += random.Next(5, 10);
         Dirty += random.Next(5, 10);
@@ -127,7 +146,7 @@ class Tamagocha
 
     private void JumpMinute()
     {
-        WriteMessageToConsole($"{Name} внезапно начинает прыгать как угорелый. Это продолжается целую минуту. Показатели голода, жажды и чистоты повышены!",15);
+        WriteMessageToConsole($"{Name} внезапно начинает прыгать как угорелый. Это продолжается целую минуту. Показатели голода, жажды и чистоты повышены!",18);
         Thirsty += random.Next(5, 10);
         Hungry += random.Next(5, 10);
         Dirty += random.Next(5, 10);
@@ -135,7 +154,7 @@ class Tamagocha
 
     public void PrintInfo()
     {
-        WriteMessageToConsole($"{Name}: Health:{Health} Hungry:{Hungry} Dirty:{Dirty} Thirsty:{Thirsty} IsDead:{IsDead} Happyness:{Happyness}",18);
+        WriteMessageToConsole($"{Name}: Health:{Health} Hungry:{Hungry} Dirty:{Dirty} Thirsty:{Thirsty} IsDead:{IsDead} Happyness:{Happyness}",2);
     }
 
 
@@ -168,18 +187,24 @@ class Tamagocha
 
         Thirsty -= random.Next(5, 10);
     }
+    internal void Walking()
+    {
+        WriteMessageToConsole($"{Name} внезапно бежит гулять как угорелый. Это продолжается целую минуту. Показатели жажды повышены!       ", 21);
+
+        Boredom -= random.Next(5, 10);
+    }
 
     internal void ChangeHappy()
     {
 
         if (dirty >= 1000 || thirsty >= 1000 || hungry >= 1000)
         {
-            Happyness -= random.Next(20, 50);
+            Happyness -= random.Next(0, 20);
             WriteMessageToConsole($"{Name} внезапно начинает плакать как угорелый. Это продолжается целую минуту. Показатели грусти повышены!", 24);
         }
         else if (dirty <= 1000 && thirsty <= 1000 && hungry <= 1000)
         {
-            Happyness += random.Next(20, 50);
+            Happyness += random.Next(0, 20);
             if (Happyness > 100) Happyness = 100;
             WriteMessageToConsole($"{Name} счастливый малыш                                                                                      ", 24);
         }
@@ -191,12 +216,12 @@ class Tamagocha
 
         if (thirsty >= 1000 || hungry >= 1000)
         {
-            Health -= random.Next(20, 50);
+            Health -= random.Next(0, 20);
             WriteMessageToConsole($"{Name} внезапно начинает болеть как угорелый. Это продолжается целую минуту. Показатели болезни повышены!", 27);
         }
         else if (thirsty <= 1000 && hungry <= 1000)
         {
-            Health += random.Next(20, 50);
+            Health += random.Next(0, 20);
             if (Health>100) Health = 100;
             WriteMessageToConsole($"{Name} здоров как бык!                                                                                    ", 27);
         }
@@ -235,6 +260,10 @@ class Tamagocha
             case 1:present.Smash();break;
             case 2:present.Gnaw();break;
         }
+        Random rndH = new Random();
+        int cheer = rndH.Next(0, 3);
+        Happyness += rndH.Next(0, 50);
+        if(Happyness>100) Happyness = 100;
     }
 }
 public interface IPresent
