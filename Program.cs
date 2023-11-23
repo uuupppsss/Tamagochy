@@ -15,18 +15,18 @@ do
 {
     command = Console.ReadKey();
     if (command.Key == ConsoleKey.F)
-        tamagocha.Feed();
+        tamagocha.Feed(); //кормить
     else if (command.Key == ConsoleKey.I)
-        tamagocha.PrintInfo();
+        tamagocha.PrintInfo(); //инфо
     else if (command.Key == ConsoleKey.C)
-        tamagocha.Clean();
+        tamagocha.Clean(); //мыть
     else if (command.Key == ConsoleKey.D)
-        tamagocha.Drink();
+        tamagocha.Drink(); //поить!
     else if (command.Key == ConsoleKey.P)
-        tamagocha.GivePresent();
+        tamagocha.GivePresent(); // поадрок
     else if (command.Key == ConsoleKey.W)
-        tamagocha.Walking();
-    tamagocha.ChangeHappy();
+        tamagocha.Walking(); //гулять!
+    tamagocha.ChangeHappy(); 
     tamagocha.ChangeHealth();
     tamagocha.Die();
 }
@@ -169,25 +169,28 @@ class Tamagocha
         IsDead = true;
     }
 
-    internal void Feed()
+    internal void Feed() //кормить
     {
         WriteMessageToConsole($"{Name} внезапно начинает ЖРАТЬ как угорелый. Это продолжается целую минуту. Показатели голода повышены!     ",21);
 
         Hungry -= random.Next(5, 10);
     }
-    internal void Clean()
+
+    internal void Clean() //мыть
     {
         WriteMessageToConsole($"{Name} внезапно начинает мыть попу как угорелый. Это продолжается целую минуту. Показатели чистоты повышены!",21);
 
         Dirty -= random.Next(5, 10);
     }
-    internal void Drink()
+
+    internal void Drink() //поить!
     {
         WriteMessageToConsole($"{Name} внезапно начинает пить как угорелый. Это продолжается целую минуту. Показатели жажды повышены!       ",21);
 
         Thirsty -= random.Next(5, 10);
     }
-    internal void Walking()
+
+    internal void Walking() //гулять!
     {
         WriteMessageToConsole($"{Name} внезапно бежит гулять как угорелый. Это продолжается целую минуту. Показатели жажды повышены!       ", 21);
 
@@ -197,16 +200,16 @@ class Tamagocha
     internal void ChangeHappy()
     {
 
-        if (dirty >= 1000 || thirsty >= 1000 || hungry >= 1000)
+        if (dirty >= 1000 || boredom >= 1000 )
         {
             Happyness -= random.Next(0, 20);
             WriteMessageToConsole($"{Name} внезапно начинает плакать как угорелый. Это продолжается целую минуту. Показатели грусти повышены!", 24);
         }
-        else if (dirty <= 1000 && thirsty <= 1000 && hungry <= 1000)
+        else if (dirty <= 1000 && boredom <= 1000 )
         {
             Happyness += random.Next(0, 20);
             if (Happyness > 100) Happyness = 100;
-            WriteMessageToConsole($"{Name} счастливый малыш                                                                                      ", 24);
+            WriteMessageToConsole($"{Name} счастливый малыш                                                                                  ", 24);
         }
         
     }
