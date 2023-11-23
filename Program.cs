@@ -36,25 +36,25 @@ tamagocha.Stop();
 void Tamagocha_HungryChanged(object? sender, EventArgs e)
 {
     Console.SetCursorPosition(0, 6);
-    Console.Write($"{tamagocha.Name} голодает! Показатель голода растет: {tamagocha.Hungry}");
+    Console.Write($"{tamagocha.Name} голодает! Показатель голода растет: {tamagocha.Hungry}      ");
     Console.SetCursorPosition(0, 0); 
 }
 void Tamagocha_DirtyChanged(object? sender, EventArgs e)
 {
     Console.SetCursorPosition(0, 9);
-    Console.Write($"{tamagocha.Name} испачкался! Показатель пыльности растет: {tamagocha.Dirty}");
+    Console.Write($"{tamagocha.Name} испачкался! Показатель пыльности растет: {tamagocha.Dirty}  ");
     Console.SetCursorPosition(0, 0);
 }
 void Tamagocha_ThirstyChanged(object? sender, EventArgs e)
 {
     Console.SetCursorPosition(0, 12);
-    Console.Write($"{tamagocha.Name} засох! Показатель жажды растет: {tamagocha.Dirty}");
+    Console.Write($"{tamagocha.Name} засох! Показатель жажды растет: {tamagocha.Thirsty}         ");
     Console.SetCursorPosition(0, 0);
 }
 void Tamagocha_GoForWalk(object? sender, EventArgs e)
 {
     Console.SetCursorPosition(0, 15);
-    Console.Write($"{tamagocha.Name} хочет гулять! Показатель скуки растет: {tamagocha.Boredom}");
+    Console.Write($"{tamagocha.Name} хочет гулять! Показатель скуки растет: {tamagocha.Boredom}  ");
     Console.SetCursorPosition(0, 0);
 }
 
@@ -140,8 +140,8 @@ class Tamagocha
     {
         WriteMessageToConsole($"{Name} внезапно начинает спать как угорелый. Это продолжается целую минуту. Показатели голода, жажды, чистоты и скуки повышены!  ",18);
         Thirsty += random.Next(5, 10);
-        Hungry += random.Next(5, 10);
-        Dirty += random.Next(5, 10);
+        Hungry += random.Next(0, 5);
+        Dirty += random.Next(0, 5);
         Boredom += random.Next(5, 10);
     }
 
@@ -149,7 +149,7 @@ class Tamagocha
     {
         WriteMessageToConsole($"{Name} внезапно начинает прыгать как угорелый. Это продолжается целую минуту. Показатели голода, жажды и чистоты повышены!",18);
         Thirsty += random.Next(5, 10);
-        Hungry += random.Next(0, 5);
+        Hungry += random.Next(5, 10);
         Dirty += random.Next(5, 10);
         Boredom -= random.Next(0, 5);
     }
@@ -192,14 +192,16 @@ class Tamagocha
     {
         WriteMessageToConsole($"{Name} внезапно начинает пить как угорелый. Это продолжается целую минуту. Показатели жажды повышены!       ",21);
 
-        Thirsty -= random.Next(5, 10);
+        Thirsty -= random.Next(10, 40);
     }
 
     internal void Walking() //гулять
     {
         WriteMessageToConsole($"{Name} внезапно бежит гулять как угорелый. Это продолжается целую минуту. Показатели скуки повышены!       ", 21);
 
-        Boredom -= random.Next(5, 10);
+        if (Boredom > 0) Boredom -= random.Next(5, 10);
+        else Boredom = 0;
+
     }
 
     internal void ChangeHappy()
