@@ -25,7 +25,7 @@ do
     else if (command.Key == ConsoleKey.P)
         tamagocha.GivePresent(); // поадрок
     else if (command.Key == ConsoleKey.W)
-        tamagocha.Walking(); //гулять!
+        tamagocha.Walking(); //гулять
     tamagocha.ChangeHappy(); 
     tamagocha.ChangeHealth();
     tamagocha.Die();
@@ -138,23 +138,28 @@ class Tamagocha
 
     private void FallSleep()
     {
-        WriteMessageToConsole($"{Name} внезапно начинает спать как угорелый. Это продолжается целую минуту. Показатели голода, жажды и чистоты повышены!  ",18);
+        WriteMessageToConsole($"{Name} внезапно начинает спать как угорелый. Это продолжается целую минуту. Показатели голода, жажды, чистоты и скуки повышены!  ",18);
         Thirsty += random.Next(5, 10);
         Hungry += random.Next(5, 10);
         Dirty += random.Next(5, 10);
+        Boredom += random.Next(5, 10);
     }
 
     private void JumpMinute()
     {
         WriteMessageToConsole($"{Name} внезапно начинает прыгать как угорелый. Это продолжается целую минуту. Показатели голода, жажды и чистоты повышены!",18);
         Thirsty += random.Next(5, 10);
-        Hungry += random.Next(5, 10);
+        Hungry += random.Next(0, 5);
         Dirty += random.Next(5, 10);
+        Boredom -= random.Next(0, 5);
     }
 
     public void PrintInfo()
     {
-        WriteMessageToConsole($"{Name}: Health:{Health} Hungry:{Hungry} Dirty:{Dirty} Thirsty:{Thirsty} IsDead:{IsDead} Happyness:{Happyness}",2);
+        string alive;
+        if (IsDead) alive = "да";
+        else alive = "нет";
+        WriteMessageToConsole($"{Name}: Здоровье:{Health} Голод:{Hungry} Грязь:{Dirty} Жажда:{Thirsty} Жив:{alive} Счастье:{Happyness} Скука:{Boredom}",2);
     }
 
 
@@ -190,9 +195,9 @@ class Tamagocha
         Thirsty -= random.Next(5, 10);
     }
 
-    internal void Walking() //гулять!
+    internal void Walking() //гулять
     {
-        WriteMessageToConsole($"{Name} внезапно бежит гулять как угорелый. Это продолжается целую минуту. Показатели жажды повышены!       ", 21);
+        WriteMessageToConsole($"{Name} внезапно бежит гулять как угорелый. Это продолжается целую минуту. Показатели скуки повышены!       ", 21);
 
         Boredom -= random.Next(5, 10);
     }
@@ -246,8 +251,7 @@ class Tamagocha
     internal void GivePresent()
     {
         IPresent present;
-        Random rndP = new Random();
-        int random_present = rndP.Next(0, 2);
+        int random_present = random.Next(0, 2);
         switch (random_present)
         {
             case 0: present = new ToyPresent(); break;
@@ -255,17 +259,14 @@ class Tamagocha
             default: present = new ClothesPresent(); break;
         }
 
-        Random rndA = new Random();
-        int action = rndA.Next(0, 3);
+        int action = random.Next(0, 3);
         switch (action)
         {
             case 0:present.Open();break;
             case 1:present.Smash();break;
             case 2:present.Gnaw();break;
         }
-        Random rndH = new Random();
-        int cheer = rndH.Next(0, 3);
-        Happyness += rndH.Next(0, 50);
+        Happyness += random.Next(0, 50);
         if(Happyness>100) Happyness = 100;
     }
 }
